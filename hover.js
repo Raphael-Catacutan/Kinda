@@ -1,50 +1,39 @@
+var finishedChecking = false;
+var imgArray = new Array();
 
-const BACKGROUND = {
-    "t00": "t00",
-    "t01": "t01",
-    "t02": "t02",
-    "t03": "t03",
-    "t04": "t04",
-    "t05": "t05",
-    "t06": "t06",
-    "t07": "t07",
-    "t08": "t08",
-    "t09": "t09",
-    "t11": "t11",
-    "t12": "t12",
-    "t13": "t13",
-    "t14": "t14",
-    "t15": "t15",
-    "t16": "t16",
-    "t17": "t17",
-    "t18": "t18",
-    "t19": "t19",
-    "t20": "t20",
-    "t21": "t21",
-    "t22": "t22",
-    "t23": "t23"
+for (let i = 0; i <= 24; i++) {
+    const img = new Image();
+    img.src = 'resources/image/t' + i.toString().padStart(2, "0") + '.jpg';
+    img.onload = () => imageExist(i, img);
 }
-document.addEventListener("DOMContentLoaded", function () {
-    for (const x of Object.keys(BACKGROUND)) {
-        const element = document.getElementById(x)
-        element.addEventListener("mouseover", function() {
-            document.documentElement.style.backgroundColor = getDarkColor();
-            for (const x of document.getElementsByClassName("tags")) {
-                if (x != element) x.style.opacity = "0.2"
-            }
+
+function imageExist(e, img) {
+    const bg = document.createElement("div")
+    bg.style.backgroundImage = `url('resources/image/t${e.toString().padStart(2, "0")}.jpg')`
+    bg.classList.add('background')
+    bg.id = 'b' + e.toString().padStart(2, "0")
+    document.body.appendChild(bg)
+    imgArray.push(img);
+    console.log("loaded", e)
+    if (imgArray.length == 23) start()
+}
+
+
+var myHover = 1
+function start() {
+    const TAGELEMENTS = document.getElementsByClassName("tags")
+    const BGELEMENTS = document.getElementsByClassName("background")
+    for (let e = 0; e <= 23; e++) {
+        const x = e.toString().padStart(2, "0")
+        const element = document.getElementById(`t${x}`)
+        element.addEventListener('mouseover',  () => {
+            for (const f of BGELEMENTS) f.style.opacity = (f.id != 'b' + x) ? "0": "1"
+            for (const r of TAGELEMENTS) r.style.opacity = (r != element) ? "0.2": "1"
+            
         });
         element.addEventListener("mouseout", function () {
-            document.documentElement.style.backgroundColor = "black";
-            for (const x of document.getElementsByClassName("tags")) x.style.opacity = "1"
+            for (const o of TAGELEMENTS) o.style.opacity = "1"
+            for (const f of BGELEMENTS) f.style.opacity = "0"
         });
     }
-})
-
-// Temporarily Color but will be changed to image
-function getDarkColor() {
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += Math.floor(Math.random() * 10);
-    }
-    return color;
 }
